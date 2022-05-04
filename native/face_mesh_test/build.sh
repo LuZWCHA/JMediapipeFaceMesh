@@ -1,0 +1,2 @@
+bazel  build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --action_env PYTHON_BIN_PATH={YOUR PYTHON_BIN_PATH} mediapipe/examples/desktop/face_mesh_test:face_mesh_cpu_desk --verbose_failures
+# For example: bazel --output_base=D://temp//bazel  build -c opt --define MEDIAPIPE_DISABLE_GPU=1 --action_env PYTHON_BIN_PATH="D:\\Anaconda3\\envs\\mediapipe\\python.exe" mediapipe/examples/desktop/face_mesh_test:face_mesh_cpu_desk --verbose_failures
