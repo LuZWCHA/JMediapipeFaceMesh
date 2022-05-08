@@ -24,7 +24,7 @@ public class Main {
 
         Graph graph = new Graph();
 
-        int ret = graph.init("./mediapipe/graphs/face_mesh_desktop_live.pbtxt");
+        int ret = graph.init("./mediapipe/graphs/face_mesh_desktop_live.pbtxt", ".");
         if(ret != 0){
             System.out.println("Graph init failed: " + ret);
         }

@@ -35,10 +35,12 @@ node {
   calculator: "ConstantSidePacketCalculator"
   output_side_packet: "PACKET:0:num_faces"
   output_side_packet: "PACKET:1:with_attention"
+  output_side_packet: "PACKET:2:root"
   node_options: {
     [type.googleapis.com/mediapipe.ConstantSidePacketCalculatorOptions]: {
       packet { int_value: 1 }
       packet { bool_value: true }
+      packet { string_value: "."}
     }
   }
 }
@@ -49,6 +51,7 @@ node {
   input_stream: "IMAGE:throttled_input_video"
   input_side_packet: "NUM_FACES:num_faces"
   input_side_packet: "WITH_ATTENTION:with_attention"
+  input_side_packet: "ROOT:root"
   output_stream: "LANDMARKS:multi_face_landmarks"
   output_stream: "ROIS_FROM_LANDMARKS:face_rects_from_landmarks"
   output_stream: "DETECTIONS:face_detections"

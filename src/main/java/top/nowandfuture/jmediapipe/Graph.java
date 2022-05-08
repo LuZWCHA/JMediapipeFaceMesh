@@ -10,8 +10,8 @@ public class Graph {
         reference = createGraph();
     }
 
-    public synchronized int init(String modelPath){
-        return init(reference, modelPath);
+    public synchronized int init(String pbtxtPath, String rootPath){
+        return init(reference, pbtxtPath, rootPath);
     }
 
     public synchronized int setCallback(LandmarkCallback callback){
@@ -39,7 +39,7 @@ public class Graph {
     }
 
     private native long createGraph();
-    private native int init(long rf, String name);
+    private native int init(long rf, String pbtxtPath, String rootPath);
     private native int detect(long rf, long index, byte[] frame, int width, int height);
     private native int registerCallback(long rf, LandmarkCallback callback);
     private native void release(long rf);
