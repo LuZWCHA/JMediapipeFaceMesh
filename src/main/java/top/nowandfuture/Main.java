@@ -35,7 +35,7 @@ public class Main {
 
         try {
             grabber.open(0);
-            grabber.setSize(1024, 768);
+            grabber.setSize(1280, 720);
 
             Runtime.getRuntime().addShutdownHook(new Thread(){
                 @Override

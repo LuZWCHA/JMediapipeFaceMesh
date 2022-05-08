@@ -79,15 +79,10 @@ int mediapipe::desk::Graph::InitGraph(const char* model_path)
 }
 
 
-int  mediapipe::desk::Graph::RegisterCallback(mediapipe::mycallback::LandmarkCallbcak* callback)
+int  mediapipe::desk::Graph::RegisterCallback(std::shared_ptr<mediapipe::mycallback::LandmarkCallbcak> callback)
 {
     if ( callback )
     {
-        if (m_LandmarksCallBack) {
-            delete m_LandmarksCallBack;
-            m_LandmarksCallBack = nullptr;
-        }
-
         m_LandmarksCallBack = callback;
         return 0;
     }
@@ -96,7 +91,7 @@ int  mediapipe::desk::Graph::RegisterCallback(mediapipe::mycallback::LandmarkCal
 }
 
 
-int mediapipe::desk::Graph::DetectFrame(int image_index, int image_width, int image_height, uchar* image_data)
+int mediapipe::desk::Graph::DetectFrame(int image_index, int image_width, int image_height, std::shared_ptr<uchar> image_data)
 {
     if (!m_bIsInit)
         return 17;
@@ -134,11 +129,6 @@ int mediapipe::desk::Graph::Release()
         return converToInt(run_status.code());
     }
 
-    if (m_LandmarksCallBack) {
-        delete m_LandmarksCallBack;
-        m_LandmarksCallBack = nullptr;
-    }
-
     m_bIsRelease = true;
     return 0;
 }
@@ -166,12 +156,15 @@ absl::Status mediapipe::desk::Graph::Mediapipe_InitGraph(const char* model_path)
     return absl::OkStatus();
 }
 
-absl::Status mediapipe::desk::Graph::Mediapipe_RunMPPGraph(int image_index, int image_width, int image_height, uchar* image_data)
+absl::Status mediapipe::desk::Graph::Mediapipe_RunMPPGraph(int image_index, int image_width, int image_height, std::shared_ptr<uchar> image_data)
 {
-    cv::Mat raw_camera_frame(image_height, image_width, CV_8UC3, image_data);
+    cv::Mat raw_camera_frame(image_height, image_width, CV_8UC3, image_data.get());
     cv::Mat camera_frame;
     cv::cvtColor(raw_camera_frame, camera_frame, cv::COLOR_BGR2RGB);
     cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
+
+    //cv::namedWindow("show");
+    //cv::imshow("show", camera_frame);
 
     // Wrap Mat into an ImageFrame.
     auto input_frame = absl::make_unique<mediapipe::ImageFrame>(
@@ -203,7 +196,7 @@ absl::Status mediapipe::desk::Graph::Mediapipe_RunMPPGraph(int image_index, int 
             face_mesh_landmarks.clear();
 
             std::vector<MeshInfo> mesh_info;
-
+            std::vector<cv::Point3f> points;
             for (int m = 0; m < output_landmarks.size(); ++m)
             {
                 mediapipe::NormalizedLandmarkList single_face_NormalizedLandmarkList = output_landmarks[m];
@@ -211,10 +204,14 @@ absl::Status mediapipe::desk::Graph::Mediapipe_RunMPPGraph(int image_index, int 
 
                 for (int i = 0; i < single_face_NormalizedLandmarkList.landmark_size(); ++i)
                 {
+                    
                     Point p;
                     const mediapipe::NormalizedLandmark landmark = single_face_NormalizedLandmarkList.landmark(i);
+
+
                     p.x = landmark.x() * camera_frame.cols;
                     p.y = landmark.y() * camera_frame.rows;
+
                     p.z = landmark.z();
 
                     face_mesh_landmarks.push_back(p);
@@ -232,7 +229,6 @@ absl::Status mediapipe::desk::Graph::Mediapipe_RunMPPGraph(int image_index, int 
 
         }
     }
-
     return absl::OkStatus();
 }
 
@@ -290,7 +286,6 @@ absl::Status mediapipe::desk::Graph::Mediapipe_RunMPPGraph(const char* video_pat
         if (m_pPoller_landmarks->QueueSize() > 0) {
             if (m_pPoller_landmarks->Next(&packet_landmarks))
             {
-
                 std::vector<mediapipe::NormalizedLandmarkList> output_landmarks = packet_landmarks.Get<std::vector<mediapipe::NormalizedLandmarkList>>();
 
                 std::vector<MeshInfo> face_mesh_landmarks;

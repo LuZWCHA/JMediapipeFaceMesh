@@ -13,18 +13,19 @@
 using namespace cv;
 using namespace std;
 
-// some codes if copy from https://www.stubbornhuang.com/
+// some codes are copied from https://www.stubbornhuang.com/
 
 typedef void(*LandmarksCallBack)(int image_index, vector<MeshInfo>& infos, int count);
 
+std::vector<MeshInfo> mesh_info;
 
 class TestCallback : public mediapipe::mycallback::LandmarkCallbcak {
 
 public:
     void landmark(int image_index, std::vector<MeshInfo>& infos, int count) {
-        cout << "callback" << endl;
-    }
 
+        mesh_info = infos;
+    }
 };
 
 int main()
@@ -46,7 +47,7 @@ int main()
     }
 
     // 注册回调函数
-    if (!graph.RegisterCallback(new TestCallback()))
+    if (!graph.RegisterCallback(make_shared<TestCallback>()))
     {
         cout << "注册坐标回调函数成功" << endl;
     }
@@ -79,22 +80,25 @@ int main()
 
     //创建窗口
     namedWindow("打开摄像头", 1);
-
     int image_index = 0;
     while (1)
     {
         Mat frame;
-
         bool res = grabber.readFrame(frame);
 
-        Mat copyFrame;
-        frame.copyTo(copyFrame);
+        int image_width = frame.cols;
+        int image_height = frame.rows;
+
+        uchar* copy_data = new uchar[image_height * image_width * 3];
+        std::memcpy(copy_data, frame.data, image_height * image_width * 3);
 
         if (res < 0) {
             break;
         }
 
-        int ret = graph.DetectFrame(image_index, frame.cols, frame.rows, copyFrame.data);
+        auto frameData = shared_ptr<uchar>(copy_data);
+
+        int ret = graph.DetectFrame(image_index, frame.cols, frame.rows, frameData);
 
         if (ret == 0)
         {
@@ -105,8 +109,19 @@ int main()
             std::cout << "Mediapipe_Hand_Tracking_Detect_Frame执行失败！ 错误码：" << ret << std::endl;
         }
 
+        for (MeshInfo info : mesh_info) {
+            for (auto landmark : info.meshlandmarks) {
+                float x = landmark.x;
+                float y = landmark.y;
+                
+                cv::circle(frame,cv::Point(frame.cols - x, y), 2, cv::Scalar(255, 0, 0));
+            }
+        }
+
         //显示摄像头读取到的图像
         imshow("打开摄像头", frame);
+
+
         //等待1毫秒，如果按键则退出循环
         if (waitKey(1) >= 0)
         {

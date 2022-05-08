@@ -36,14 +36,14 @@ namespace mediapipe {
 
         public:
             int InitGraph(const char* model_path);
-            int RegisterCallback(mediapipe::mycallback::LandmarkCallbcak* callback);
-            int DetectFrame(int image_index, int image_width, int image_height, uchar* image_data);
+            int RegisterCallback(std::shared_ptr<mediapipe::mycallback::LandmarkCallbcak> callback);
+            int DetectFrame(int image_index, int image_width, int image_height, std::shared_ptr<uchar> image_data);
             int DetectVideo(const char* video_path, int show_image);
             int Release();
 
         private:
             absl::Status Mediapipe_InitGraph(const char* model_path);
-            absl::Status Mediapipe_RunMPPGraph(int image_index, int image_width, int image_height, uchar* image_data);
+            absl::Status Mediapipe_RunMPPGraph(int image_index, int image_width, int image_height, std::shared_ptr<uchar> image_data);
             absl::Status Mediapipe_RunMPPGraph(const char* video_path, int show_image);
             absl::Status Mediapipe_ReleaseGraph();
 
@@ -56,7 +56,7 @@ namespace mediapipe {
             const char* m_kWindowName;
             const char* m_kOutputLandmarks;
 
-            mediapipe::mycallback::LandmarkCallbcak* m_LandmarksCallBack;
+            std::shared_ptr <mediapipe::mycallback::LandmarkCallbcak> m_LandmarksCallBack;
 
             mediapipe::CalculatorGraph m_Graph;
 

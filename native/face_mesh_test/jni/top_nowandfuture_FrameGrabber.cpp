@@ -23,7 +23,7 @@ JNIEXPORT jboolean JNICALL Java_top_nowandfuture_FrameGrabber_open
 JNIEXPORT jboolean JNICALL Java_top_nowandfuture_FrameGrabber_close
 (JNIEnv* env, jobject thisObj, jlong rf) {
 
-	cvcap::FrameGrabber* grabber = (cvcap::FrameGrabber*)rf;
+	cvcap::FrameGrabber* grabber = reinterpret_cast<cvcap::FrameGrabber*>(rf);
 
 	bool ret = false;
 	if (grabber) {
@@ -50,7 +50,7 @@ JNIEXPORT jboolean JNICALL Java_top_nowandfuture_FrameGrabber_close
 JNIEXPORT jobject JNICALL Java_top_nowandfuture_FrameGrabber_listDevices
 (JNIEnv* env, jobject thisObj, jlong rf) {
 	std::vector<std::string> devices;
-	int count = ((cvcap::FrameGrabber*)rf)->listDevices(devices);
+	int count = reinterpret_cast<cvcap::FrameGrabber*>(rf)->listDevices(devices);
 
 	if (count >= 1) {
 		jobjectArray ret = (jobjectArray)env->NewObjectArray(devices.size(), env->FindClass("java/lang/String"), env->NewStringUTF(""));
@@ -70,12 +70,11 @@ JNIEXPORT jobject JNICALL Java_top_nowandfuture_FrameGrabber_listDevices
 jbyteArray matToByteArray(JNIEnv* env, const cv::Mat& image) {
 	int size_ = image.elemSize();
 	jbyteArray resultImage = env->NewByteArray(image.total() * size_);
-	jbyte* _data = new jbyte[image.total() * size_];
+	auto _data = std::make_unique<jbyte[]>(image.total() * size_);
 	for (int i = 0; i < image.total() * size_; i++) {
 		_data[i] = image.data[i];
 	}
-	env->SetByteArrayRegion(resultImage, 0, image.total() * size_, _data);
-	delete[]_data;
+	env->SetByteArrayRegion(resultImage, 0, image.total() * size_, _data.get());
 
 	return resultImage;
 }
@@ -88,15 +87,15 @@ jbyteArray matToByteArray(JNIEnv* env, const cv::Mat& image) {
 JNIEXPORT jbyteArray JNICALL Java_top_nowandfuture_FrameGrabber_readFrame
 (JNIEnv* env, jobject thisObj, jlong rf, jintArray size) {
 	cv::Mat mat;
-	((cvcap::FrameGrabber*)rf)->readFrame(mat);
+	reinterpret_cast<cvcap::FrameGrabber*>(rf)->readFrame(mat);
 	
 	int w = mat.rows;
 	int h = mat.cols;
 
-	int* sizeArray = new int[2]{ w, h };
-	env->SetIntArrayRegion(size, 0, 2, (jint*)sizeArray);
+	auto sizeArray = std::make_unique<int[]>(2);
+	sizeArray[0] = w; sizeArray[1] = h;
+	env->SetIntArrayRegion(size, 0, 2, (jint*)sizeArray.get());
 	jbyteArray ret = matToByteArray(env, mat);
-	delete sizeArray;
 	
 	return ret;
 }
@@ -113,7 +112,7 @@ JNIEXPORT jboolean JNICALL Java_top_nowandfuture_FrameGrabber_isOpened
 
 JNIEXPORT jboolean JNICALL Java_top_nowandfuture_FrameGrabber_set
 (JNIEnv* env, jobject thisObj, jlong rf, jint key, jdouble value) {
-	cvcap::FrameGrabber* grabber = (cvcap::FrameGrabber*)rf;
+	cvcap::FrameGrabber* grabber = reinterpret_cast<cvcap::FrameGrabber*>(rf);
 
 	if (grabber) {
 		return grabber->set(key, value) ? JNI_TRUE : JNI_FALSE;
@@ -124,7 +123,7 @@ JNIEXPORT jboolean JNICALL Java_top_nowandfuture_FrameGrabber_set
 
 JNIEXPORT jdouble JNICALL Java_top_nowandfuture_FrameGrabber_get
 (JNIEnv* env, jobject thisObj, jlong rf, jint key) {
-	cvcap::FrameGrabber* grabber = (cvcap::FrameGrabber*)rf;
+	cvcap::FrameGrabber* grabber =  reinterpret_cast<cvcap::FrameGrabber*>(rf);
 
 	if (grabber) {
 		return grabber->get(key);

@@ -1,5 +1,7 @@
 package top.nowandfuture;
 
+import top.nowandfuture.math.Vec3d;
+
 import java.util.LinkedList;
 
 public enum Vec3dPool {
