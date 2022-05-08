@@ -1,7 +1,9 @@
-package top.nowandfuture;
+package top.nowandfuture.jmediapipe;
 
-import top.nowandfuture.exception.CameraHasOpenedException;
-import top.nowandfuture.exception.CameraNotOpenedException;
+import top.nowandfuture.jmediapipe.CameraHasOpenedException;
+import top.nowandfuture.jmediapipe.CameraNotOpenedException;
+import top.nowandfuture.jmediapipe.exception.CameraHasOpenedException;
+import top.nowandfuture.jmediapipe.exception.CameraNotOpenedException;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,6 +1,7 @@
-package top.nowandfuture;
+package top.nowandfuture.jmediapipe;
 
-import top.nowandfuture.callback.LandmarkCallback;
+import top.nowandfuture.jmediapipe.LandmarkCallback;
+import top.nowandfuture.jmediapipe.callback.LandmarkCallback;
 
 public class Graph {
 

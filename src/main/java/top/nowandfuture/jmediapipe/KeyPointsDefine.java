@@ -1,4 +1,4 @@
-package top.nowandfuture.utils;
+package top.nowandfuture.jmediapipe.utils;
 
 public class KeyPointsDefine {
 //    silhouette: [

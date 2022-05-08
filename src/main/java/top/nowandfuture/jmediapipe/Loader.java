@@ -1,7 +1,7 @@
-package top.nowandfuture;
+package top.nowandfuture.jmediapipe;
 
-import top.nowandfuture.utils.CopyUtils;
-import top.nowandfuture.utils.NativeUtils;
+import top.nowandfuture.jmediapipe.utils.CopyUtils;
+import top.nowandfuture.jmediapipe.utils.NativeUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,7 +24,6 @@ public class Loader {
             System.load(Paths.get(projectPath, "libs/opencv_world3410.dll").toString());
             System.load(Paths.get(projectPath, "libs/face_mesh_cpu_desk.dll").toString());
         }
-        System.out.println("Success load dll!");
     }
 
 }

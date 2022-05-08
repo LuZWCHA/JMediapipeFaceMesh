@@ -1,23 +1,26 @@
-package top.nowandfuture.math;
+package top.nowandfuture.jmediapipe.math;
+
+import top.nowandfuture.jmediapipe.Vec3d;
+import top.nowandfuture.jmediapipe.Vec4d;
 
 public class Utils {
     public static float RAD2ANG = (float)( 180 / Math.PI);
     public static double epsilon = 1e-5;
 
-    public static AxisAngle rotationVector2AxisAngle(Vec3d rotationVector) {
+    public static top.nowandfuture.jmediapipe.math.AxisAngle rotationVector2AxisAngle(Vec3d rotationVector) {
 
         double mo = Math.sqrt(
                 rotationVector.x * rotationVector.x + rotationVector.y * rotationVector.y + rotationVector.z * rotationVector.z);
 
-        return new AxisAngle(rotationVector.scale(1 / mo), mo);
+        return new top.nowandfuture.jmediapipe.math.AxisAngle(rotationVector.scale(1 / mo), mo);
     }
 
-    public static Vec3d quaternion2Eular(Vec4d quaternion) {
+    public static top.nowandfuture.jmediapipe.math.Vec3d quaternion2Eular(Vec4d quaternion) {
         // roll (x-axis rotation)
-        Vec3d euler = new Vec3d();
+        top.nowandfuture.jmediapipe.math.Vec3d euler = new top.nowandfuture.jmediapipe.math.Vec3d();
         double sinr_cosp = 2 * (quaternion.w * quaternion.x + quaternion.y * quaternion.z);
         double cosr_cosp = 1 - 2 * (quaternion.x * quaternion.x + quaternion.y * quaternion.y);
-        euler.z = Fast.atan2(sinr_cosp, cosr_cosp);
+        euler.z = top.nowandfuture.jmediapipe.math.Fast.atan2(sinr_cosp, cosr_cosp);
 
         // pitch (y-axis rotation)
         double sinp = 2 * (quaternion.w * quaternion.y - quaternion.z * quaternion.x);
@@ -29,21 +32,21 @@ public class Utils {
         // yaw (z-axis rotation)
         double siny_cosp = 2 * (quaternion.w * quaternion.z + quaternion.x * quaternion.y);
         double cosy_cosp = 1 - 2 * (quaternion.y * quaternion.y + quaternion.z * quaternion.z);
-        euler.x = Fast.atan2(siny_cosp, cosy_cosp);
+        euler.x = top.nowandfuture.jmediapipe.math.Fast.atan2(siny_cosp, cosy_cosp);
 
         return euler;
     }
 
-    public static Vec4d rotationVector2Quaternion(Vec3d rotationVector) {
-        AxisAngle axisAngle = rotationVector2AxisAngle(rotationVector);
+    public static top.nowandfuture.jmediapipe.math.Vec4d rotationVector2Quaternion(top.nowandfuture.jmediapipe.math.Vec3d rotationVector) {
+        top.nowandfuture.jmediapipe.math.AxisAngle axisAngle = rotationVector2AxisAngle(rotationVector);
         final double a = Math.sin(axisAngle.angle / 2);
-        return new Vec4d(Math.cos(axisAngle.angle / 2),
+        return new top.nowandfuture.jmediapipe.math.Vec4d(Math.cos(axisAngle.angle / 2),
                 axisAngle.axis.x * a,
                 axisAngle.axis.y * a,
                 axisAngle.axis.z * a);
     }
 
-    public static Vec3d rotationVector2Eular(Vec3d rotationVector){
+    public static top.nowandfuture.jmediapipe.math.Vec3d rotationVector2Eular(top.nowandfuture.jmediapipe.math.Vec3d rotationVector){
         return quaternion2Eular(rotationVector2Quaternion(rotationVector));
     }
 

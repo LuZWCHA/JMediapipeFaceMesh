@@ -23,7 +23,9 @@
  *
  */
 
-package top.nowandfuture.math;
+package top.nowandfuture.jmediapipe.math;
+
+import top.nowandfuture.jmediapipe.Vec3d;
 
 /**
  * A single precision floating point 3 by 3 matrix.
@@ -250,7 +252,7 @@ public class Matrix3d {
      * @param row  the matrix row
      * @param v    the vector into which the matrix row values will be copied
      */
-    public final void getRow(int row, Vec3d v) {
+    public final void getRow(int row, top.nowandfuture.jmediapipe.math.Vec3d v) {
         if (row == 0) {
             v.x = m00;
             v.y = m01;

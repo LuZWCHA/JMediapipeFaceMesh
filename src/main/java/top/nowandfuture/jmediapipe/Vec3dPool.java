@@ -1,6 +1,6 @@
-package top.nowandfuture;
+package top.nowandfuture.jmediapipe;
 
-import top.nowandfuture.math.Vec3d;
+import top.nowandfuture.jmediapipe.math.Vec3d;
 
 import java.util.LinkedList;
 

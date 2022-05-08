@@ -1,10 +1,12 @@
-package top.nowandfuture.math;
+package top.nowandfuture.jmediapipe.math;
+
+import top.nowandfuture.jmediapipe.Utils;
 
 public class Fast {
 
     public static float atan2(float dy, float dx){
         float ax = Math.abs(dx), ay = Math.abs(dy);
-        float a = Math.min(ax, ay)/(Math.max(ax, ay)+(float)Utils.epsilon);
+        float a = Math.min(ax, ay)/(Math.max(ax, ay)+(float) Utils.epsilon);
         float s = a*a;
         float r = ((-0.0464964749f * s + 0.15931422f) * s - 0.327622764f) * s * a + a;
         if(ay > ax) r = 1.57079637f - r;
@@ -16,7 +18,7 @@ public class Fast {
 
     public static double atan2(double dy, double dx){
         double ax = Math.abs(dx), ay = Math.abs(dy);
-        double a = Math.min(ax, ay)/(Math.max(ax, ay)+(float)Utils.epsilon);
+        double a = Math.min(ax, ay)/(Math.max(ax, ay)+(float) top.nowandfuture.jmediapipe.math.Utils.epsilon);
         double s = a*a;
         double r = ((-0.0464964749 * s + 0.15931422) * s - 0.327622764) * s * a + a;
         if(ay > ax) r = 1.57079637 - r;

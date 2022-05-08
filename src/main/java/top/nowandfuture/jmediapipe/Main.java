@@ -1,6 +1,7 @@
-package top.nowandfuture;
+package top.nowandfuture.jmediapipe;
 
-import top.nowandfuture.callback.FMLandmarkCallback;
+import top.nowandfuture.jmediapipe.FMLandmarkCallback;
+import top.nowandfuture.jmediapipe.callback.FMLandmarkCallback;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

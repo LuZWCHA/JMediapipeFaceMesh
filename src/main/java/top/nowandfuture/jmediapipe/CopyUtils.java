@@ -1,4 +1,4 @@
-package top.nowandfuture.utils;
+package top.nowandfuture.jmediapipe.utils;
 
 import java.io.IOException;
 import java.io.InputStream;

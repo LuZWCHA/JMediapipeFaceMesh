@@ -1,4 +1,4 @@
-package top.nowandfuture.math;
+package top.nowandfuture.jmediapipe.math;
 
 public class Vec3d {
     public double x, y, z;

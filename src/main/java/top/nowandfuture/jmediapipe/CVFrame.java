@@ -1,4 +1,4 @@
-package top.nowandfuture;
+package top.nowandfuture.jmediapipe;
 
 public class CVFrame {
     private final byte[] data;
