@@ -35,14 +35,14 @@ namespace mediapipe {
             Graph& operator=(const Graph&) = delete;
 
         public:
-            int InitGraph(const char* model_path);
+            int InitGraph(const char* model_path, const char* root_path);
             int RegisterCallback(std::shared_ptr<mediapipe::mycallback::LandmarkCallbcak> callback);
             int DetectFrame(int image_index, int image_width, int image_height, std::shared_ptr<uchar> image_data);
             int DetectVideo(const char* video_path, int show_image);
             int Release();
 
         private:
-            absl::Status Mediapipe_InitGraph(const char* model_path);
+            absl::Status Mediapipe_InitGraph(const char* model_path, const char* root_path);
             absl::Status Mediapipe_RunMPPGraph(int image_index, int image_width, int image_height, std::shared_ptr<uchar> image_data);
             absl::Status Mediapipe_RunMPPGraph(const char* video_path, int show_image);
             absl::Status Mediapipe_ReleaseGraph();

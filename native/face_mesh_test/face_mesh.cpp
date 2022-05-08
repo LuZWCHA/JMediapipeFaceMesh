@@ -66,12 +66,12 @@ mediapipe::desk::Graph::~Graph()
     }
 }
 
-int mediapipe::desk::Graph::InitGraph(const char* model_path)
+int mediapipe::desk::Graph::InitGraph(const char* model_path, const char* root)
 {
-    absl::Status run_status = Mediapipe_InitGraph(model_path);
+    absl::Status run_status = Mediapipe_InitGraph(model_path, root);
     if (!run_status.ok())
     {
-        LOGD(run_status.ToString().c_str());
+        std::cout << run_status << std::endl;
         return converToInt(run_status.code());
     }
     m_bIsInit = true;
@@ -99,6 +99,7 @@ int mediapipe::desk::Graph::DetectFrame(int image_index, int image_width, int im
     absl::Status run_status = Mediapipe_RunMPPGraph(image_index, image_width, image_height, image_data);
 
     if (!run_status.ok()) {
+        std::cout << run_status << std::endl;
         LOGD(run_status.ToString().c_str());
         return converToInt(run_status.code());
     }
@@ -134,14 +135,17 @@ int mediapipe::desk::Graph::Release()
 }
 
 
-absl::Status mediapipe::desk::Graph::Mediapipe_InitGraph(const char* model_path)
+absl::Status mediapipe::desk::Graph::Mediapipe_InitGraph(const char* model_path, const char* root)
 {
     std::string calculator_graph_config_contents;
     MP_RETURN_IF_ERROR(mediapipe::file::GetContents(model_path, &calculator_graph_config_contents));
+    std::map<std::string, mediapipe::Packet> input_side_packets;
+    
+    input_side_packets["ROOT"] = mediapipe::MakePacket<std::string>(root);
     mediapipe::CalculatorGraphConfig config =
         mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(
             calculator_graph_config_contents);
-    MP_RETURN_IF_ERROR(m_Graph.Initialize(config));
+    MP_RETURN_IF_ERROR(m_Graph.Initialize(config, input_side_packets));
 
     auto sop = m_Graph.AddOutputStreamPoller(m_kOutputStream);
 
@@ -162,9 +166,6 @@ absl::Status mediapipe::desk::Graph::Mediapipe_RunMPPGraph(int image_index, int 
     cv::Mat camera_frame;
     cv::cvtColor(raw_camera_frame, camera_frame, cv::COLOR_BGR2RGB);
     cv::flip(camera_frame, camera_frame, /*flipcode=HORIZONTAL*/ 1);
-
-    //cv::namedWindow("show");
-    //cv::imshow("show", camera_frame);
 
     // Wrap Mat into an ImageFrame.
     auto input_frame = absl::make_unique<mediapipe::ImageFrame>(

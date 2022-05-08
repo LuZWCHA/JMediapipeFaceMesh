@@ -30,7 +30,7 @@ extern "C" {
 	 * Signature: (JLjava/lang/String;)V
 	 */
 	JNIEXPORT jint JNICALL Java_top_nowandfuture_jmediapipe_Graph_init
-	(JNIEnv*, jobject, jlong, jstring);
+	(JNIEnv*, jobject, jlong, jstring, jstring root);
 
 	/*
 	 * Class:     top_nowandfuture_Graph

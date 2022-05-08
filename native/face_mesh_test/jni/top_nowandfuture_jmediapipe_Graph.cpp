@@ -16,9 +16,10 @@ JNIEXPORT jlong JNICALL Java_top_nowandfuture_jmediapipe_Graph_createGraph
  * Signature: (Ljava/lang/String;)V
  */
 JNIEXPORT jint JNICALL Java_top_nowandfuture_jmediapipe_Graph_init
-(JNIEnv* env, jobject thisObj, jlong rf, jstring name) {
+(JNIEnv* env, jobject thisObj, jlong rf, jstring name, jstring root) {
 	auto path = std::unique_ptr<const char>(env->GetStringUTFChars(name, 0));
-	int ret = reinterpret_cast<mediapipe::desk::Graph*>(rf)->InitGraph(path.get());
+	auto root_c = std::unique_ptr<const char>(env->GetStringUTFChars(root, 0));
+	int ret = reinterpret_cast<mediapipe::desk::Graph*>(rf)->InitGraph(path.get(), root_c.get());
 	return ret;
 }
 

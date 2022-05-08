@@ -37,7 +37,7 @@ int main()
     string mediapipe_face_mesh_model_path = "D:\\Projects\\C++\\mediapipe\\mediapipe\\mediapipe\\graphs\\face_mesh\\face_mesh_desktop_live.pbtxt";
     std::cout << mediapipe_face_mesh_model_path << std::endl;
 
-    if (!graph.InitGraph(mediapipe_face_mesh_model_path.c_str()))
+    if (!graph.InitGraph(mediapipe_face_mesh_model_path.c_str(), "D:\\Projects\\C++\\mediapipe\\mediapipe"))
     {
         cout << "初始化模型成功" << endl;
     }
