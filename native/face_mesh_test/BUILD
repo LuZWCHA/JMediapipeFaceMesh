@@ -33,9 +33,9 @@ cc_binary(
         "@bazel_tools//tools/jdk:current_java_runtime",
         "test.cpp", "face_mesh.h","face_mesh.cpp","face_mesh_data.h", "callback.h", 
         "windows_cv_capture/cv_capture.h", "windows_cv_capture/cv_capture.cpp", 
-        "jni/jni_callback.h","jni/top_nowandfuture_FrameGrabber.h", "jni/top_nowandfuture_FrameGrabber.cpp", 
-        "jni/top_nowandfuture_Graph.h", "jni/top_nowandfuture_Graph.cpp",
-        "jni/top_nowandfuture_CVPnP.h", "jni/top_nowandfuture_CVPnP.cpp",
+        "jni/jni_callback.h","jni/top_nowandfuture_jmediapipe_FrameGrabber.h", "jni/top_nowandfuture_jmediapipe_FrameGrabber.cpp", 
+        "jni/top_nowandfuture_jmediapipe_Graph.h", "jni/top_nowandfuture_jmediapipe_Graph.cpp",
+        "jni/top_nowandfuture_jmediapipe_CVPnP.h", "jni/top_nowandfuture_jmediapipe_CVPnP.cpp",
         "cv_pnp.cpp", "cv_pnp.h",
         "jni/util.h", "jni/util.cpp", "log_utils.h"
     ],

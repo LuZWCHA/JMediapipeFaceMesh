@@ -44,7 +44,7 @@ public class FMLandmarkCallback implements LandmarkCallback{
         Vec3d eular = Utils.rotationVector2Eular(ret[0]).scale(Utils.RAD2ANG);
         eular.z = eular.z > 0 ? 180 - eular.z : -eular.z - 180;
 
-//        System.out.println(eular);
+        System.out.println(eular);
 
         double leftAsR = HeadPoseEstimator.FacialFeatures.eyeAspectRatio(fmlmk, HeadPoseEstimator.Eyes.LEFT);
         double rightAsR = HeadPoseEstimator.FacialFeatures.eyeAspectRatio(fmlmk, HeadPoseEstimator.Eyes.RIGHT);
