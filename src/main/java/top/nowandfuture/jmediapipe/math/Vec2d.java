@@ -1,7 +1,5 @@
 package top.nowandfuture.jmediapipe.math;
 
-import top.nowandfuture.jmediapipe.Vec3d;
-
 public class Vec2d {
     public double x, y;
 

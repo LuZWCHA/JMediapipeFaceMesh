@@ -1,12 +1,12 @@
 package top.nowandfuture.jmediapipe.callback;
 
-import top.nowandfuture.jmediapipe.*;
-import top.nowandfuture.jmediapipe.LandmarkCallback;
+import top.nowandfuture.jmediapipe.HeadPoseEstimator;
 import top.nowandfuture.jmediapipe.math.Utils;
 import top.nowandfuture.jmediapipe.math.Vec2d;
 import top.nowandfuture.jmediapipe.math.Vec3d;
+import top.nowandfuture.jmediapipe.Vec3dPool;
 
-public class FMLandmarkCallback implements LandmarkCallback {
+public class FMLandmarkCallback implements LandmarkCallback{
 
     private final Vec3dPool p = Vec3dPool.POOL;
     private final HeadPoseEstimator estimator = new HeadPoseEstimator(1280, 720);
