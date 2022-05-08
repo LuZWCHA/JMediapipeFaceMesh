@@ -6,3 +6,6 @@ Then, you need to put the ```face_mesh_test``` folder into mediapipe C++ source 
 
 At last, compile the Windows DLL library using the build.sh script at the root of the mediapipe project.
 My compile env is Windows 11 with Bazel-5.0.
+----
+For more details, please follow the Mediapipe [Guide](https://google.github.io/mediapipe/getting_started/cpp.html):
+
