@@ -1,6 +1,7 @@
 package top.nowandfuture.jmediapipe;
 
 import top.nowandfuture.jmediapipe.callback.FMLandmarkCallback;
+import top.nowandfuture.jmediapipe.math.Vec3d;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -16,7 +17,7 @@ public class Main {
         }
 
         FrameGrabber grabber = new FrameGrabber();
-        List<String> devices = grabber.listDevices();
+        List<String> devices = FrameGrabber.listCameras();
 
         for (int i = 0; i < devices.size(); i++) {
             System.out.println(i + ", " + devices.get(i));
@@ -28,14 +29,19 @@ public class Main {
         if(ret != 0){
             System.out.println("Graph init failed: " + ret);
         }
-        ret = graph.setCallback(new FMLandmarkCallback());
-        if(ret != 0){
-            System.out.println("Callback register failed: " + ret);
-        }
 
         try {
             grabber.open(0);
             grabber.setSize(1280, 720);
+            ret = graph.setCallback(new FMLandmarkCallback(1280, 720){
+                @Override
+                public void parseLandmarks(Vec3d pose, double leftAsR, double rightAsR, double mouseAsR, double irisLX, double irisLY, double irisRX, double irisRY) {
+                    System.out.println(pose);
+                }
+            });
+            if(ret != 0){
+                System.out.println("Callback register failed: " + ret);
+            }
 
             Runtime.getRuntime().addShutdownHook(new Thread(){
                 @Override

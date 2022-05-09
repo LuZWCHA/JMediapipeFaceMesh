@@ -14,6 +14,10 @@ public class Loader {
         CopyUtils.copySourcesToParent();
     }
 
+    public static void copySourcesTo(String path) throws IOException, URISyntaxException {
+        CopyUtils.copySourcesTo(path);
+    }
+
     public static void loadLibs() throws IOException {
         try{
             NativeUtils.loadLibraryFromJar("/libs/opencv_world3410.dll");

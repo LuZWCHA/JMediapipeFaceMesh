@@ -1,6 +1,7 @@
 package top.nowandfuture.jmediapipe;
 
 import top.nowandfuture.jmediapipe.exception.CameraHasOpenedException;
+import top.nowandfuture.jmediapipe.exception.CameraHasReleasedException;
 import top.nowandfuture.jmediapipe.exception.CameraNotOpenedException;
 
 import java.util.Arrays;
@@ -53,7 +54,7 @@ public class FrameGrabber implements AutoCloseable{
                 throw new CameraNotOpenedException();
             }
         }else{
-            throw new CameraHasOpenedException();
+            throw new CameraHasReleasedException();
         }
     }
 
@@ -74,15 +75,12 @@ public class FrameGrabber implements AutoCloseable{
         return -1;
     }
 
-    public List<String> listDevices(){
+    public static List<String> listCameras(){
         return Arrays.asList(listDevices_inner());
     }
 
-    private String[] listDevices_inner(){
-        if(reference > 0){
-            return listDevices(reference);
-        }
-        return new String[]{};
+    private static String[] listDevices_inner(){
+        return listDevices();
     }
 
     private long create(){
@@ -108,26 +106,25 @@ public class FrameGrabber implements AutoCloseable{
         return false;
     }
 
-    public synchronized CVFrame readFrame(){
+    public synchronized CVFrame readFrame() throws CameraHasReleasedException {
         int[] size = new int[2];
         byte[] data = readFrame_inner(size);
 
         return new CVFrame(data, size);
     }
 
-    private byte[] readFrame_inner(int[] size){
+    private byte[] readFrame_inner(int[] size) throws CameraHasReleasedException {
         if(reference > 0){
             return readFrame(reference, size);
-        }else {
-            size[0] = size[1] = 0;
+        }else{
+            throw new CameraHasReleasedException();
         }
-        return null;
     }
 
     private native long createGrabber();
     private native boolean open(long rf, int idx);
     private native boolean close(long rf);
-    private native String[] listDevices(long rf);
+    private static native String[] listDevices();
     private native byte[] readFrame(long rf, int[] size);
     private native boolean isOpened(long rf);
     private native boolean set(long rf, int key, double value);

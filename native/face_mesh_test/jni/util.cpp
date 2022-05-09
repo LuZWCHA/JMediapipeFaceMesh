@@ -2,6 +2,7 @@
 
 #include "util.h"
 
+
 char* JniUtil::jStringToChar(JNIEnv* env, jstring jstr) {
     if (env == NULL || jstr == NULL) {
         return nullptr;
@@ -55,6 +56,4 @@ char* JniUtil::jByteArrayToChar(JNIEnv* env, jbyteArray buf) {
     env->ReleaseByteArrayElements(buf, bytes, 0);
     return chars;
 }
-
-
 

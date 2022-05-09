@@ -43,7 +43,7 @@ extern "C" {
 	 * Signature: (J)Ljava/util/List;
 	 */
 	JNIEXPORT jobject JNICALL Java_top_nowandfuture_jmediapipe_FrameGrabber_listDevices
-	(JNIEnv*, jobject, jlong);
+	(JNIEnv*, jobject);
 
 	/*
 	 * Class:     top_nowandfuture_FrameGrabber

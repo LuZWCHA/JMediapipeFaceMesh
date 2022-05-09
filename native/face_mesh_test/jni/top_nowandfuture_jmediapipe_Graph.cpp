@@ -17,9 +17,13 @@ JNIEXPORT jlong JNICALL Java_top_nowandfuture_jmediapipe_Graph_createGraph
  */
 JNIEXPORT jint JNICALL Java_top_nowandfuture_jmediapipe_Graph_init
 (JNIEnv* env, jobject thisObj, jlong rf, jstring name, jstring root) {
-	auto path = std::unique_ptr<const char>(env->GetStringUTFChars(name, 0));
-	auto root_c = std::unique_ptr<const char>(env->GetStringUTFChars(root, 0));
-	int ret = reinterpret_cast<mediapipe::desk::Graph*>(rf)->InitGraph(path.get(), root_c.get());
+	auto path = env->GetStringUTFChars(name, 0);
+	auto root_c = env->GetStringUTFChars(root, 0);
+
+	int ret = reinterpret_cast<mediapipe::desk::Graph*>(rf)->InitGraph(path, root_c);
+
+	env->ReleaseStringUTFChars(name, path);
+	env->ReleaseStringUTFChars(root, root_c);
 	return ret;
 }
 
@@ -54,7 +58,9 @@ JNIEXPORT jint JNICALL Java_top_nowandfuture_jmediapipe_Graph_detect
  */
 JNIEXPORT jint JNICALL Java_top_nowandfuture_jmediapipe_Graph_registerCallback
 (JNIEnv* env, jobject thisObj, jlong rf, jobject callback) {
-	return reinterpret_cast<mediapipe::desk::Graph*>(rf)->RegisterCallback(std::make_shared<JNI_LandmarkCallback>(env, callback));
+	JavaVM* jvm;
+	env->GetJavaVM(&jvm);
+	return reinterpret_cast<mediapipe::desk::Graph*>(rf)->RegisterCallback(std::make_shared<JNI_LandmarkCallback>(jvm, callback));
 }
 
 /*

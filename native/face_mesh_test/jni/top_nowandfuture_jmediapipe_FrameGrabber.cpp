@@ -48,9 +48,9 @@ JNIEXPORT jboolean JNICALL Java_top_nowandfuture_jmediapipe_FrameGrabber_close
  * Signature: ()Ljava/util/List;
  */
 JNIEXPORT jobject JNICALL Java_top_nowandfuture_jmediapipe_FrameGrabber_listDevices
-(JNIEnv* env, jobject thisObj, jlong rf) {
+(JNIEnv* env, jobject thisObj) {
 	std::vector<std::string> devices;
-	int count = reinterpret_cast<cvcap::FrameGrabber*>(rf)->listDevices(devices);
+	int count = cvcap::FrameGrabber::listDevices(devices);
 
 	if (count >= 1) {
 		jobjectArray ret = (jobjectArray)env->NewObjectArray(devices.size(), env->FindClass("java/lang/String"), env->NewStringUTF(""));

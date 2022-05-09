@@ -68,13 +68,15 @@ mediapipe::desk::Graph::~Graph()
 
 int mediapipe::desk::Graph::InitGraph(const char* model_path, const char* root)
 {
+    if (m_bIsInit) return -1;
+
     absl::Status run_status = Mediapipe_InitGraph(model_path, root);
     if (!run_status.ok())
     {
-        std::cout << run_status << std::endl;
         return converToInt(run_status.code());
     }
     m_bIsInit = true;
+    m_bIsRelease = false;
     return  0;
 }
 
@@ -93,8 +95,8 @@ int  mediapipe::desk::Graph::RegisterCallback(std::shared_ptr<mediapipe::mycallb
 
 int mediapipe::desk::Graph::DetectFrame(int image_index, int image_width, int image_height, std::shared_ptr<uchar> image_data)
 {
-    if (!m_bIsInit)
-        return 17;
+    if (!m_bIsInit || m_bIsRelease)
+        return 17; 
 
     absl::Status run_status = Mediapipe_RunMPPGraph(image_index, image_width, image_height, image_data);
 
@@ -123,6 +125,10 @@ int mediapipe::desk::Graph::DetectVideo(const char* video_path, int show_image)
 
 int mediapipe::desk::Graph::Release()
 {
+    if (!m_bIsInit || m_bIsRelease) {
+        return -1;
+    }
+
     absl::Status run_status = Mediapipe_ReleaseGraph();
 
     if (!run_status.ok()) {
@@ -131,6 +137,7 @@ int mediapipe::desk::Graph::Release()
     }
 
     m_bIsRelease = true;
+    m_bIsInit = false;
     return 0;
 }
 
@@ -140,7 +147,7 @@ absl::Status mediapipe::desk::Graph::Mediapipe_InitGraph(const char* model_path,
     std::string calculator_graph_config_contents;
     MP_RETURN_IF_ERROR(mediapipe::file::GetContents(model_path, &calculator_graph_config_contents));
     std::map<std::string, mediapipe::Packet> input_side_packets;
-    
+
     input_side_packets["ROOT"] = mediapipe::MakePacket<std::string>(root);
     mediapipe::CalculatorGraphConfig config =
         mediapipe::ParseTextProtoOrDie<mediapipe::CalculatorGraphConfig>(
@@ -148,14 +155,12 @@ absl::Status mediapipe::desk::Graph::Mediapipe_InitGraph(const char* model_path,
     MP_RETURN_IF_ERROR(m_Graph.Initialize(config, input_side_packets));
 
     auto sop = m_Graph.AddOutputStreamPoller(m_kOutputStream);
-
     assert(sop.ok());
     m_pPoller = std::make_unique<mediapipe::OutputStreamPoller>(std::move(sop.value()));
 
     mediapipe::StatusOrPoller sop_landmark = m_Graph.AddOutputStreamPoller(m_kOutputLandmarks);
     assert(sop_landmark.ok());
     m_pPoller_landmarks = std::make_unique<mediapipe::OutputStreamPoller>(std::move(sop_landmark.value()));
-
     MP_RETURN_IF_ERROR(m_Graph.StartRun({}));
     return absl::OkStatus();
 }
@@ -342,6 +347,6 @@ absl::Status mediapipe::desk::Graph::Mediapipe_RunMPPGraph(const char* video_pat
 
 absl::Status mediapipe::desk::Graph::Mediapipe_ReleaseGraph()
 {
-    MP_RETURN_IF_ERROR(m_Graph.CloseInputStream(m_kInputStream));
+    MP_RETURN_IF_ERROR(m_Graph.CloseAllInputStreams());
     return m_Graph.WaitUntilDone();
 }

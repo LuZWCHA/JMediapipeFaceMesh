@@ -6,10 +6,16 @@ import top.nowandfuture.jmediapipe.math.Vec2d;
 import top.nowandfuture.jmediapipe.math.Vec3d;
 import top.nowandfuture.jmediapipe.Vec3dPool;
 
-public class FMLandmarkCallback implements LandmarkCallback{
+public abstract class FMLandmarkCallback implements LandmarkCallback{
 
     private final Vec3dPool p = Vec3dPool.POOL;
-    private final HeadPoseEstimator estimator = new HeadPoseEstimator(1280, 720);
+
+    private int w, h;
+
+    public FMLandmarkCallback(int w, int h){
+        this.w = w;
+        this.h = h;
+    }
 
     /**
      * @param idx The input image index, start from 0.
@@ -24,6 +30,8 @@ public class FMLandmarkCallback implements LandmarkCallback{
         Vec3d[] fmlmk = new Vec3d[468];
         Vec3d[] irislmk = new Vec3d[10];
         Vec2d[] keyPoint2D = new Vec2d[36];
+
+        final HeadPoseEstimator estimator = new HeadPoseEstimator(w, h);
 
         for(int i = 0; i < 478 * 3; i += 3){
             int l_idx = i / 3;
@@ -42,6 +50,8 @@ public class FMLandmarkCallback implements LandmarkCallback{
         Vec3d[] ret = estimator.getHeadPose(keyPoint2D);
 
         Vec3d eular = Utils.rotationVector2Eular(ret[0]).scale(Utils.RAD2ANG);
+        // TODO: 2022/5/9 strange transform result? I test the C++ code and Java code but get different result.
+        // I have to rest the z to correct to a reasonable value.
         eular.z = eular.z > 0 ? 180 - eular.z : -eular.z - 180;
 
         System.out.println(eular);
@@ -52,14 +62,10 @@ public class FMLandmarkCallback implements LandmarkCallback{
         double[] irisLXY = HeadPoseEstimator.FacialFeatures.detectIris(fmlmk, irislmk, HeadPoseEstimator.Eyes.LEFT);
         double[] irisRXY = HeadPoseEstimator.FacialFeatures.detectIris(fmlmk, irislmk, HeadPoseEstimator.Eyes.RIGHT);
 
-//        System.out.println(leftAsR + ", " + rightAsR + ", " + mouthAsR);
-        System.out.println(irisLXY[0]);
+        prepare(idx);
+        parseLandmarks(eular, leftAsR, rightAsR, mouthAsR, irisLXY[0], irisLXY[1], irisRXY[0], irisRXY[1]);
 
-//        if(mouthAsR > 0.5){
-//            System.out.println("mouse Open");
-//        }
-//        if(irisLXY)
-
+        //Recycle the Objects to reuse.
         for(Vec3d lmk: fmlmk){
             p.recycle(lmk);
         }
@@ -68,4 +74,10 @@ public class FMLandmarkCallback implements LandmarkCallback{
             p.recycle(lmk);
         }
     }
+
+    public void prepare(int idx){
+
+    }
+
+    public abstract void parseLandmarks(Vec3d pose, double leftAsR, double rightAsR, double mouseAsR, double irisLX, double irisLY, double irisRX, double irisRY);
 }

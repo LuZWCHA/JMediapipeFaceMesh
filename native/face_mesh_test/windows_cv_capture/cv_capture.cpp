@@ -85,7 +85,8 @@ namespace cvcap {
     }
 
     bool FrameGrabber::open(int idx) {
-        cap = new cv::VideoCapture(idx, cv::CAP_DSHOW);
+        if (!cap || cap->isOpened()) return false;
+        cap->open(idx, cv::CAP_DSHOW);
         opened = cap->isOpened();
         return opened;
     }
@@ -107,13 +108,13 @@ namespace cvcap {
     }
 
     bool FrameGrabber::close() {
-        opened = false;
 
         if (cap) {
             cap->release();
+            opened = false;
             return true;
         }
-
+        opened = false;
         return false;
     }
 

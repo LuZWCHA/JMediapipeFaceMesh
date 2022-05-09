@@ -23,6 +23,7 @@ namespace cvcap {
 
 		FrameGrabber(){
 			opened = false;
+			cap = new cv::VideoCapture();
 		}
 
 		virtual ~FrameGrabber(){
@@ -30,7 +31,7 @@ namespace cvcap {
 			cap = nullptr;
 		}
 
-		int listDevices(std::vector<std::string>& list);
+		static int listDevices(std::vector<std::string>& list);
 		bool open(int idx);
 		int readFrame(cv::Mat& frame);
 		bool close();
