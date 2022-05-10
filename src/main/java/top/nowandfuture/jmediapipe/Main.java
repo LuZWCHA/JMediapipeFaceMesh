@@ -31,8 +31,11 @@ public class Main {
         }
 
         try {
-            grabber.open(0);
             grabber.setSize(1280, 720);
+            System.out.println(grabber.get(FrameGrabber.CV_PARAM.CAP_WIDTH.KEY()));
+            System.out.println(grabber.get(4));
+            grabber.open(0);
+
             ret = graph.setCallback(new FMLandmarkCallback(1280, 720){
                 @Override
                 public void parseLandmarks(Vec3d pose, double leftAsR, double rightAsR, double mouseAsR, double irisLX, double irisLY, double irisRX, double irisRY) {

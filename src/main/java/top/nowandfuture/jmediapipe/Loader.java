@@ -22,7 +22,7 @@ public class Loader {
         try{
             NativeUtils.loadLibraryFromJar("/libs/opencv_world3410.dll");
             NativeUtils.loadLibraryFromJar("/libs/face_mesh_cpu_desk.dll");
-        }catch (IOException e){
+        }catch (IOException | URISyntaxException e){
             e.printStackTrace();
             String projectPath = new File("").getAbsolutePath();
             System.load(Paths.get(projectPath, "libs/opencv_world3410.dll").toString());

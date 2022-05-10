@@ -24,11 +24,9 @@
 package top.nowandfuture.jmediapipe.utils;
 
 import java.io.*;
-import java.nio.file.FileSystemNotFoundException;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.ProviderNotFoundException;
-import java.nio.file.StandardCopyOption;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.*;
 
 /**
  * A simple library class which helps with loading dynamic libraries stored in the
@@ -72,7 +70,7 @@ public class NativeUtils {
      * (restriction of {@link File#createTempFile(java.lang.String, java.lang.String)}).
      * @throws FileNotFoundException If the file could not be found inside the JAR.
      */
-    public static void loadLibraryFromJar(String path) throws IOException {
+    public static void loadLibraryFromJar(String path) throws IOException, URISyntaxException {
 
         if (null == path || !path.startsWith("/")) {
             throw new IllegalArgumentException("The path has to be absolute (start with '/').");
@@ -130,9 +128,10 @@ public class NativeUtils {
         }
     }
 
-    private static File createTempDirectory(String prefix) throws IOException {
-        String tempDir = System.getProperty("java.io.tmpdir");
-        File generatedDir = new File(tempDir, prefix);
+    private static File createTempDirectory(String prefix) throws IOException, URISyntaxException {
+        URL url = CopyUtils.class.getProtectionDomain().getCodeSource().getLocation();
+        String parentDir = Paths.get(url.toURI()).getParent().toString();
+        File generatedDir = new File(parentDir, prefix);
 
         if (!generatedDir.exists() && !generatedDir.mkdir())
             throw new IOException("Failed to create temp directory " + generatedDir.getName());

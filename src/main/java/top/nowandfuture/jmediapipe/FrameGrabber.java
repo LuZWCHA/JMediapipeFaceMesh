@@ -34,9 +34,12 @@ public class FrameGrabber implements AutoCloseable{
         CAP_WIDTH(3),
         CAP_HEIGHT(4),
         CAP_FPS(5);
-        int key;
+        private int key;
         CV_PARAM(int key){
             this.key = key;
+        }
+        public int KEY(){
+            return key;
         }
     }
 
@@ -60,8 +63,8 @@ public class FrameGrabber implements AutoCloseable{
 
     public boolean setSize(int width, int height) {
         if (reference > 0) {
-            boolean ws = set(reference, CV_PARAM.CAP_WIDTH.key, width);
-            boolean hs = set(reference, CV_PARAM.CAP_HEIGHT.key, height);
+            boolean ws = set(reference, CV_PARAM.CAP_WIDTH.KEY(), width);
+            boolean hs = set(reference, CV_PARAM.CAP_HEIGHT.KEY(), height);
 
             return ws & hs;
         }
